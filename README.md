@@ -65,7 +65,7 @@ OutputLayer underwent a local capacity validation phase before public launch. Ei
 
 These numbers represent server-side processing capacity with local filesystem storage. Production latency depends on object storage (Cloudflare R2) and network round-trips.
 
-See: [`docs/capacity-validation-summary.md`](docs/capacity-validation-summary.md)
+See: [`docs/CAPACITY_VALIDATION_SUMMARY.md`](docs/CAPACITY_VALIDATION_SUMMARY.md)
 
 ### Consistency Guarantees
 
