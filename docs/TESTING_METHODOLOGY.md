@@ -8,7 +8,7 @@
 
 Before public launch, OutputLayer was subjected to a structured capacity validation process. The goal was to understand the system's operational limits, verify correctness guarantees under concurrent load, and derive safe rate limits for the initial pricing tiers.
 
-This document describes the methods used. For results, see [VALIDATION_RESULTS_OVERVIEW.md](https://github.com/fmonsalvebravo-dev/outputlayer/blob/main/docs/CAPACITY_VALIDATION_SUMMARY.md). For a developer-oriented interpretation, see [VALIDATION_RESULTS_OVERVIEW.md](https://github.com/fmonsalvebravo-dev/outputlayer/blob/main/docs/VALIDATION_RESULTS_OVERVIEW.md).
+This document describes the methods used. For results, see [CAPACITY_VALIDATION_SUMMARY.md](https://github.com/fmonsalvebravo-dev/outputlayer/blob/main/docs/CAPACITY_VALIDATION_SUMMARY.md). For a developer-oriented interpretation, see [VALIDATION_RESULTS_OVERVIEW.md](https://github.com/fmonsalvebravo-dev/outputlayer/blob/main/docs/VALIDATION_RESULTS_OVERVIEW.md).
 
 ---
 
