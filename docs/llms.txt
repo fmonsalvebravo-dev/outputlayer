@@ -1,0 +1,160 @@
+# OutputLayer
+> OutputLayer — Infrastructure for agent artifacts.
+> Store, retrieve, share, and manage lifecycle for AI-generated artifacts.
+
+OutputLayer is a REST API for storing, retrieving, and managing binary artifacts produced by AI agents. Every response includes a structured agent_contract field with machine-readable next-action guidance so agents can operate without parsing error messages or HTTP status codes.
+
+
+## Base URL and Authentication
+
+Base URL: https://api.outputlayer.dev
+
+Authentication: All requests to protected endpoints must include:
+  Authorization: Bearer <api_key>
+
+The x-api-key header is not supported. API keys must not be passed in query strings.
+
+Obtain a key: POST /v1/keys/register (no auth required, rate-limited by IP)
+Key format: ol_live_ followed by 64 hex characters
+Key ID format: key_{ulid}
+
+
+## Core Endpoints
+
+POST   /v1/keys/register              Register a new API key and account (no auth)
+POST   /v1/outputs                    Upload an artifact (auth required, Idempotency-Key header required)
+GET    /v1/outputs                    List outputs for this account (auth required)
+GET    /v1/outputs/{id}               Retrieve output metadata (auth required)
+GET    /v1/outputs/{id}/content       Stream raw content bytes (auth required)
+DELETE /v1/outputs/{id}               Soft-delete an output (auth required, idempotent)
+GET    /v1/capabilities               API limits and configuration (no auth)
+GET    /v1/tool                       MCP-style tool card (no auth)
+GET    /v1/schema                     OpenAPI 3.1 schema (no auth)
+GET    /v1/examples                   Code examples in multiple languages (no auth)
+GET    /.well-known/agent.json        Agent discovery (no auth)
+POST   /v1/credits/checkout           Start a credit pack purchase (auth required)
+GET    /v1/credits/verify             Verify purchase status (auth required)
+GET    /v1/credits/balance            Get current balance (auth required)
+
+
+## Upload Fields
+
+POST /v1/outputs accepts multipart/form-data or application/json.
+For JSON: the content field must be a base64-encoded string (1 MB body limit).
+For multipart: metadata fields must appear before the content file part.
+
+Required fields: mimeType, Idempotency-Key header
+Optional fields: label, expiresAt, public (boolean), metadata object
+
+Idempotency-Key header: Required. Printable ASCII, max 255 chars. Scoped per API key.
+
+
+## Supported MIME Types (12 total)
+
+application/json, application/octet-stream, application/pdf,
+application/xml, application/zip,
+image/gif, image/jpeg, image/png, image/webp,
+text/csv, text/html, text/plain
+
+
+## Quota System
+
+free_remaining: uploads remaining in the free tier (5 at registration)
+credits_remaining: purchased upload credits
+storage_bytes_used: current storage consumption
+
+Quota headers on every authenticated response:
+  X-OutputLayer-Free-Remaining
+  X-OutputLayer-Credits-Remaining
+  X-OutputLayer-Storage-Used-Bytes
+  X-OutputLayer-Storage-Limit-Bytes
+
+
+## Limits
+
+Max file size: 25 MB (26,214,400 bytes)
+Storage limit: 250 MB (262,144,000 bytes) per account
+Free tier: 5 uploads at registration
+Default TTL: 7 days (604,800 seconds)
+Max TTL: 30 days (2,592,000 seconds)
+Idempotency-Key TTL: 7 days
+POST /v1/outputs rate limit: 60 per hour per API key
+GET endpoints rate limit: 2000 per hour per API key
+DELETE rate limit: 200 per hour per API key
+Discovery endpoints: 60 per minute per IP
+Registration: 10 per hour per IP
+
+
+## Output Statuses
+
+ready    Content is accessible and downloadable
+failed   Upload did not complete; idempotency slot released for retry
+expired  Content removed by TTL expiry; row retained for 410 semantics
+deleted  Soft-deleted by the account; row retained for 410 semantics
+
+Deleted and expired rows are never purged. GET /v1/outputs/{id} returns 410 with the
+correct status for any output that was ever created by this account.
+
+
+## agent_contract
+
+Every response includes agent_contract at the top level.
+
+Top-level fields:
+  version              Always "1" in V1
+  content_accessible   true only when status is ready
+  safe_to_share        true only when output was created with public: true
+  retryable            true for transient failures
+  expires_in_seconds   seconds until expiry; null if expired, deleted, or no expiry
+  next_actions         array of action objects; exactly one has recommended: true
+
+Action object fields:
+  action               one of 11 stable codes
+  available            whether the action can currently be taken
+  recommended          true on exactly one action per response
+  description          guidance text
+  method               HTTP method
+  endpoint             relative path or absolute URL
+  retry_after_seconds  only on retry_after_wait actions
+  required_body_changes  only on create_public_output (available: false)
+
+11 stable action codes:
+  download_content, share_public_url, delete_output, create_new_output,
+  create_public_output, retry_same_request, retry_after_wait,
+  buy_credits, check_capabilities, register_key, retry_checkout
+
+19 error codes:
+  missing_idempotency_key, invalid_mime_type, payload_too_large,
+  invalid_metadata, invalid_expiry, invalid_request,
+  missing_api_key, invalid_api_key,
+  quota_exhausted, storage_limit_reached,
+  output_not_found, purchase_not_found, idempotency_conflict,
+  output_expired, output_deleted,
+  upload_failed, rate_limited, server_error, idempotency_in_flight
+
+
+## Output Resource Fields
+
+outputId        string    Unique output identifier (out_{ulid})
+status          string    ready | failed | expired | deleted
+label           string?   Optional human-readable name
+mimeType        string    MIME type of the stored content
+sizeBytes       number    File size in bytes
+createdAt       string    ISO 8601 UTC
+expiresAt       string    ISO 8601 UTC
+publicUrl       string?   CDN URL (non-null only when public: true at creation)
+contentUrl      string?   Authenticated download URL (non-null only when status=ready)
+metadata        object    Agent-provided metadata
+deletedAt       string?   ISO 8601 UTC (present only when status=deleted)
+agent_contract  object    Structured next-action guidance
+
+
+## Discovery
+
+GET /v1/capabilities     Authoritative limits, MIME allowlist, rate limits, pack catalog
+GET /v1/schema           Full OpenAPI 3.1 specification
+GET /v1/examples         Curl, Python, TypeScript code examples
+GET /v1/tool             MCP tool card for agent tool registries
+GET /.well-known/agent.json  Agent discovery following well-known conventions
+
+These endpoints are public (no auth required) and CORS-enabled for cross-origin access.
