@@ -2,7 +2,7 @@
 
 Every OutputLayer response — success and error — includes an `agent_contract` field. It provides structured, machine-readable guidance on what the agent should do next, without requiring the agent to parse error messages or inspect HTTP status codes.
 
-**Source of truth:** All field names, action codes, and error codes in this document are extracted directly from [`src/lib/agentContract.ts`](../src/lib/agentContract.ts). No codes or fields are invented here.
+**Source of truth:** All field names, action codes, and error codes in this document are extracted directly from [agentContract.ts`](agentContract.ts). No codes or fields are invented here.
 
 ---
 
