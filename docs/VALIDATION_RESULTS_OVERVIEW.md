@@ -13,7 +13,7 @@ OutputLayer's API was tested across eight scenarios before public launch. The va
 3. **Stability** — Does the system degrade over sustained use?
 4. **Operational limits** — Are the published rate limits reasonable relative to actual capacity?
 
-For detailed numbers, see [docs/CAPACITY_VALIDATION_SUMMARY.md](docs/CAPACITY_VALIDATION_SUMMARY.md). For testing methods, see [docs/TESTING_METHODOLOGY.md](docs/TESTING_METHODOLOGY.md).
+For detailed numbers, see [docs/CAPACITY_VALIDATION_SUMMARY.md](docs/CAPACITY_VALIDATION_SUMMARY.md). For testing methods, see [docs/TESTING_METHODOLOGY.md](https://github.com/fmonsalvebravo-dev/outputlayer/blob/main/docs/TESTING_METHODOLOGY.md).
 
 ---
 
