@@ -234,9 +234,9 @@ Set `"public": true` at upload time to generate a CDN URL (`publicUrl`). Public 
 | **Interactive Playground** | [outputlayer.dev/playground](https://outputlayer.dev/playground) |
 | **Agent Integration Guide** | [api.outputlayer.dev/AGENTS.md](https://api.outputlayer.dev/AGENTS.md) |
 | **OpenAPI Schema** | [api.outputlayer.dev/v1/schema](https://api.outputlayer.dev/v1/schema) |
-| **Capacity Validation Summary** | [docs/capacity-validation-summary.md](docs/capacity-validation-summary.md) |
-| **Testing Methodology** | [docs/testing-methodology.md](docs/testing-methodology.md) |
-| **Validation Results Overview** | [docs/validation-results-overview.md](docs/validation-results-overview.md) |
+| **Capacity Validation Summary** | [docs/CAPACITY_VALIDATION_SUMMARY.md](docs/CAPACITY_VALIDATION_SUMMARY.md) |
+| **Testing Methodology** | [docs/TESTING_METHODOLOGY.md](docs/TESTING_METHODOLOGY.md) |
+| **Validation Results Overview** | [docs/VALIDATION_RESULTS_OVERVIEW.md](docs/VALIDATION_RESULTS_OVERVIEW.md) |
 
 ---
 
